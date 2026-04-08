@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CôtePARC — Réservez votre nettoyage automobile à Mayotte. Lavage extérieur et nettoyage intérieur professionnels. Résultats garantis." />
+  <title>CôtePARC — Nettoyage Automobile sur Réservation à Mayotte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Navigation principale">
+    <div class="nav-logo">
+      <img src="images/logo.png" alt="CôtePARC Logo" class="logo-main" id="logoMain" />
+    </div>
+    <ul class="nav-links" id="navLinks" role="list">
+      <li><a href="#services">Nos services</a></li>
+      <li><a href="#how-it-works">Comment ça marche</a></li>
+      <li><a href="#reservation">Réserver</a></li>
+      <li><a href="admin.html" class="nav-admin"><i class="bi bi-shield-lock"></i> Admin</a></li>
+      <li><a href="#reservation" class="nav-cta">Réserver maintenant</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-bg"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+    <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-badge">Réservation en ligne · Résultats garantis</div>
+        <h1 class="hero-title" id="heroTitle">
+          Votre voiture mérite
+          <span class="gradient-text">le meilleur</span> soin
+        </h1>
+        <p class="hero-description">
+          Réservez votre nettoyage automobile en 2 minutes. Nos experts s'occupent du reste —
+          lavage extérieur et nettoyage intérieur professionnel à Mayotte.
+        </p>
+        <div class="hero-actions">
+          <a href="#reservation" class="btn-primary">
+            <i class="bi bi-calendar-check"></i> Prendre rendez-vous
+          </a>
+          <a href="#services" class="btn-secondary">
+            <i class="bi bi-arrow-right-circle"></i> Découvrir nos formules
+          </a>
+        </div>
+        <div class="hero-stats" role="list" aria-label="Statistiques">
+          <div class="hero-stat" role="listitem">
+            <div class="hero-stat-number">500+</div>
+            <div class="hero-stat-label">Clients satisfaits</div>
+          </div>
+          <div class="hero-stat" role="listitem">
+            <div class="hero-stat-number">2</div>
+            <div class="hero-stat-label">Formules disponibles</div>
+          </div>
+          <div class="hero-stat" role="listitem">
+            <div class="hero-stat-number">4.9★</div>
+            <div class="hero-stat-label">Note moyenne</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-car-img">
+          <img src="images/hero-car.png" alt="Voiture propre et brillante" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES ========== -->
+  <section id="services" aria-labelledby="servicesTitle">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Nos formules</span>
+        <h2 class="section-title" id="servicesTitle">Choisissez votre niveau de propreté</h2>
+        <p class="section-description">Un service professionnel et soigné pour votre véhicule, à Mayotte.</p>
+      </div>
+
+      <div class="services-grid services-2col">
+
+        <!-- Lavage Extérieur -->
+        <article class="service-card reveal">
+          <div class="service-icon" aria-hidden="true">
+            <i class="bi bi-droplet-fill"></i>
+          </div>
+          <h3 class="service-name">Lavage Extérieur</h3>
+          <p class="service-description">Un nettoyage complet de la carrosserie pour redonner tout son éclat à votre véhicule.</p>
+          <ul class="service-features" aria-label="Inclus">
+            <li>Lavage carrosserie haute pression</li>
+            <li>Rinçage et séchage complet</li>
+            <li>Nettoyage des vitres extérieures</li>
+            <li>Nettoyage des jantes et pneus</li>
+          </ul>
+          <div class="service-price">
+            <span class="price-amount">10€</span>
+            <span class="price-unit">/ intervention</span>
+          </div>
+        </article>
+
+        <!-- Nettoyage Intérieur -->
+        <article class="service-card featured reveal">
+          <div class="service-badge">Populaire</div>
+          <div class="service-icon" aria-hidden="true">
+            <i class="bi bi-stars"></i>
+          </div>
+          <h3 class="service-name">Nettoyage Intérieur</h3>
+          <p class="service-description">Un nettoyage complet de l'habitacle pour retrouver un intérieur comme neuf.</p>
+          <ul class="service-features" aria-label="Inclus">
+            <li>Aspiration complète de l'habitacle</li>
+            <li>Nettoyage tableau de bord</li>
+            <li>Nettoyage des vitres intérieures</li>
+            <li>Désodorisation intérieure</li>
+            <li>Nettoyage des sièges et tapis</li>
+          </ul>
+          <div class="service-price">
+            <span class="price-amount">40€</span>
+            <span class="price-unit">/ intervention</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section id="how-it-works" aria-labelledby="howTitle">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">En 3 étapes</span>
+        <h2 class="section-title" id="howTitle">Comment fonctionne la réservation ?</h2>
+        <p class="section-description">Simple, rapide et confirmé par email. Votre voiture sera entre de bonnes mains.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <div class="step-number" aria-hidden="true">1</div>
+          <h3 class="step-title">Remplissez le formulaire</h3>
+          <p class="step-description">Choisissez votre formule, renseignez vos coordonnées et sélectionnez la date et l'heure.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number" aria-hidden="true">2</div>
+          <h3 class="step-title">Validation par notre équipe</h3>
+          <p class="step-description">Notre équipe examine votre demande et valide le créneau dans les plus brefs délais.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number" aria-hidden="true">3</div>
+          <h3 class="step-title">Notification quand c'est prêt</h3>
+          <p class="step-description">Vous recevez un email de confirmation et une notification dès que votre véhicule est prêt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESERVATION FORM ========== -->
+  <section id="reservation" aria-labelledby="formTitle">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Réservation en ligne</span>
+        <h2 class="section-title" id="formTitle">Prenez rendez-vous maintenant</h2>
+        <p class="section-description">Remplissez le formulaire ci-dessous et nous vous confirmerons votre créneau rapidement.</p>
+      </div>
+
+      <div class="form-wrapper reveal">
+        <p class="form-title"><i class="bi bi-clipboard-check"></i> Formulaire de réservation</p>
+        <p class="form-subtitle">Tous les champs marqués d'un <span style="color:var(--danger)">*</span> sont obligatoires.</p>
+
+        <form id="reservationForm" novalidate>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label class="form-label" for="formFirstName">Prénom <span class="required">*</span></label>
+              <input type="text" id="formFirstName" name="firstName" class="form-input"
+                placeholder="ex : Sophie" autocomplete="given-name" required aria-required="true" aria-describedby="err_firstName" />
+              <span class="form-error-msg" id="err_firstName" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formLastName">Nom <span class="required">*</span></label>
+              <input type="text" id="formLastName" name="lastName" class="form-input"
+                placeholder="ex : Martin" autocomplete="family-name" required aria-required="true" aria-describedby="err_lastName" />
+              <span class="form-error-msg" id="err_lastName" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formEmail">Email <span class="required">*</span></label>
+              <input type="email" id="formEmail" name="email" class="form-input"
+                placeholder="ex : sophie@email.com" autocomplete="email" required aria-required="true" aria-describedby="err_email" />
+              <span class="form-error-msg" id="err_email" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formPhone">Téléphone <span class="required">*</span></label>
+              <input type="tel" id="formPhone" name="phone" class="form-input"
+                placeholder="ex : 06 39 XX XX XX" autocomplete="tel" required aria-required="true" aria-describedby="err_phone" />
+              <span class="form-error-msg" id="err_phone" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formVehicle">Type de véhicule <span class="required">*</span></label>
+              <select id="formVehicle" name="vehicle" class="form-select" required aria-required="true" aria-describedby="err_vehicle">
+                <option value="">— Sélectionner —</option>
+                <option value="citadine">Citadine</option>
+                <option value="berline">Berline / Coupé</option>
+                <option value="suv">SUV / 4x4</option>
+                <option value="utilitaire">Utilitaire / Van</option>
+              </select>
+              <span class="form-error-msg" id="err_vehicle" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formDate">Date souhaitée <span class="required">*</span></label>
+              <input type="date" id="formDate" name="date" class="form-input"
+                required aria-required="true" aria-describedby="err_date" />
+              <span class="form-error-msg" id="err_date" role="alert"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formTime">Heure souhaitée <span class="required">*</span></label>
+              <select id="formTime" name="time" class="form-select" required aria-required="true" aria-describedby="err_time">
+                <option value="">— Choisir —</option>
+                <option value="08:00">08h00</option>
+                <option value="08:30">08h30</option>
+                <option value="09:00">09h00</option>
+                <option value="09:30">09h30</option>
+                <option value="10:00">10h00</option>
+                <option value="10:30">10h30</option>
+                <option value="11:00">11h00</option>
+                <option value="11:30">11h30</option>
+                <option value="14:00">14h00</option>
+                <option value="14:30">14h30</option>
+                <option value="15:00">15h00</option>
+                <option value="15:30">15h30</option>
+                <option value="16:00">16h00</option>
+                <option value="16:30">16h30</option>
+                <option value="17:00">17h00</option>
+              </select>
+              <span class="form-error-msg" id="err_time" role="alert"></span>
+            </div>
+
+            <!-- Formule selector -->
+            <div class="form-group full-width">
+              <label class="form-label">Formule souhaitée <span class="required">*</span></label>
+              <div class="service-selector" role="radiogroup" aria-label="Choisir une formule">
+                <div class="service-option" data-service="exterieur" role="radio" aria-checked="false" tabindex="0">
+                  <div class="service-option-icon" aria-hidden="true"><i class="bi bi-droplet-fill"></i></div>
+                  <div class="service-option-name">Lavage Extérieur</div>
+                  <div class="service-option-price">10€</div>
+                </div>
+                <div class="service-option" data-service="interieur" role="radio" aria-checked="false" tabindex="0">
+                  <div class="service-option-icon" aria-hidden="true"><i class="bi bi-stars"></i></div>
+                  <div class="service-option-name">Nettoyage Intérieur</div>
+                  <div class="service-option-price">40€</div>
+                </div>
+              </div>
+              <input type="hidden" id="formService" name="service" />
+              <span class="form-error-msg" id="err_service" role="alert"></span>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label" for="formMessage">Message (facultatif)</label>
+              <textarea id="formMessage" name="message" class="form-textarea"
+                placeholder="Informations complémentaires, demandes particulières…" rows="3"></textarea>
+            </div>
+
+            <div class="form-submit-wrapper">
+              <button type="submit" class="btn-submit" id="submitBtn" aria-label="Envoyer ma réservation">
+                <i class="bi bi-calendar-check btn-icon"></i>
+                Envoyer ma réservation
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section id="avis" aria-labelledby="avisTitle">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Avis clients</span>
+        <h2 class="section-title" id="avisTitle">Ce que disent nos clients</h2>
+      </div>
+      <div class="testimonials-grid">
+        <article class="testimonial-card reveal">
+          <div class="testimonial-stars" aria-label="5 étoiles">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+          <blockquote class="testimonial-text">
+            "Ils ont fait un super travail, ponctuels et efficaces !"
+          </blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar" aria-hidden="true">M</div>
+            <div class="author-info">
+              <div class="author-name">MAMAN Djalasse</div>
+              <div class="author-verified"><i class="bi bi-patch-check-fill"></i> Client vérifié</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONFIRMATION MODAL ========== -->
+  <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+    <div class="modal-box">
+      <div class="modal-icon" aria-hidden="true"><i class="bi bi-check-circle-fill"></i></div>
+      <h2 class="modal-title" id="modalHeading">Réservation enregistrée !</h2>
+      <p class="modal-message">
+        Merci <strong id="modalName"></strong> ! Votre réservation pour
+        <strong id="modalService"></strong> le <strong id="modalDate"></strong>
+        a bien été reçue. Vous recevrez un email de confirmation dès validation.
+      </p>
+      <div class="modal-ref" aria-label="Numéro de référence">
+        <i class="bi bi-receipt"></i> Réf. : <span id="modalRef"></span>
+      </div>
+      <button class="modal-close-btn" id="closeModal" aria-label="Fermer cette fenêtre">
+        Fermer
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== TOAST CONTAINER ========== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer role="contentinfo">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a class="navbar-brand" href="#" aria-label="CôtePARC - Accueil">
+        <div class="logo-badge">
+          <img src="images/logo.png" alt="Logo CôtePARC" class="logo-main" />
+        </div>
+      </a>  </div>
+        <p class="footer-tagline">
+          Le spécialiste du nettoyage automobile sur réservation à Mayotte. Propreté, soin et professionnalisme à chaque passage.
+        </p>
+      </div>
+
+      <div>
+        <p class="footer-col-title">Navigation</p>
+        <ul class="footer-links">
+          <li><a href="#services">Nos services</a></li>
+          <li><a href="#how-it-works">Comment ça marche</a></li>
+          <li><a href="#reservation">Réserver</a></li>
+          <li><a href="#avis">Avis clients</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <p class="footer-col-title">Contact</p>
+        <p><i class="bi bi-geo-alt-fill"></i> <span>Mayotte, France</span></p>
+        <p><i class="bi bi-envelope-fill"></i> <span>coterparc@gmail.com</span></p>
+        <p><i class="bi bi-clock-fill"></i> <span>Lun–Sam : 8h–18h</span></p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 CôtePARC — Mayotte. Tous droits réservés.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
