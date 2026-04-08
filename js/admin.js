@@ -12,7 +12,7 @@
    ============================================= */
 const EMAILJS_PUBLIC_KEY  = 'zop-P62P1Isfv_-Cq';
 const EMAILJS_SERVICE_ID  = 'service_coterparc';
-const EMAILJS_TEMPLATE_ID = 'template_ts3clrf';
+const EMAILJS_TEMPLATE_ID = 'template_949nyvq';
 const EMAILJS_CONFIGURED  = EMAILJS_PUBLIC_KEY !== '';
 
 if (EMAILJS_CONFIGURED && typeof emailjs !== 'undefined') {
@@ -25,14 +25,12 @@ if (EMAILJS_CONFIGURED && typeof emailjs !== 'undefined') {
 const SUPABASE_URL = 'https://tgijjuubscchbfnhjyre.supabase.co'; 
 const SUPABASE_KEY = 'sb_publishable_9yjHAfVEuRFGRzr73abVFg_BiFaG-GT'; 
 
-let supabase = null;
-if (SUPABASE_URL && typeof supabasejs !== 'undefined') {
-  supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_KEY);
-} else if (typeof _supabase !== 'undefined') {
-  supabase = _supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb = null;
+if (SUPABASE_URL && typeof supabase !== 'undefined') {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 }
 
-const ADMIN_CREDENTIALS = { email: 'coterparc@gmail.com', password: 'CotePARC2026' };
+const ADMIN_CREDENTIALS = { email: 'coterparc@gmail.com', password: 'Azali976@' };
 const SESSION_KEY       = 'cw_admin_session';
 const RESERVATIONS_KEY  = 'cw_reservations';
 const EMAILS_KEY        = 'cw_emails';
@@ -98,24 +96,19 @@ const loginError = document.getElementById('loginError');
 
 loginForm?.addEventListener('submit', (e) => {
   e.preventDefault();
-  const email    = document.getElementById('adminEmail').value.trim();
+  const email = document.getElementById('adminEmail').value.trim().toLowerCase();
   const password = document.getElementById('adminPassword').value;
-  const btn      = document.getElementById('loginBtn');
+  const btn = document.getElementById('loginBtn');
 
-  btn.disabled   = true;
-  btn.textContent = 'Connexion…';
-
-  setTimeout(() => {
-    if (login(email, password)) {
-      showAdminApp();
-    } else {
-      loginError.classList.add('visible');
-      loginError.textContent = 'Email ou mot de passe incorrect.';
-      setTimeout(() => loginError.classList.remove('visible'), 3500);
-    }
-    btn.disabled    = false;
-    btn.innerHTML   = 'Se connecter <i class="bi bi-arrow-right"></i>';
-  }, 600);
+  if (login(email, password)) {
+    console.log("Accès autorisé !");
+    showAdminApp();
+  } else {
+    console.warn("Échec de connexion.");
+    loginError.classList.add('visible');
+    loginError.textContent = 'Email ou mot de passe incorrect.';
+    setTimeout(() => loginError.classList.remove('visible'), 3500);
+  }
 });
 
 // =============================================
@@ -123,9 +116,9 @@ loginForm?.addEventListener('submit', (e) => {
 // =============================================
 
 async function initAdminApp() {
-  if (supabase) {
+  if (sb) {
     try {
-      const { data, error } = await supabase.from('reservations').select('*');
+      const { data, error } = await sb.from('reservations').select('*');
       if (!error && data) {
         // Sync local with remote
         localStorage.setItem(RESERVATIONS_KEY, JSON.stringify(data));
@@ -136,6 +129,7 @@ async function initAdminApp() {
   renderDashboardTable();
   renderReservations();
   renderEmails();
+  renderReviews(); // Ajout de la gestion des avis
   startClock();
   updatePendingBadge();
 }
@@ -241,11 +235,11 @@ function getFilteredReservations() {
   if (currentSearch.trim()) {
     const q = currentSearch.toLowerCase();
     list = list.filter(r =>
-      r.firstName?.toLowerCase().includes(q) ||
-      r.lastName?.toLowerCase().includes(q)  ||
-      r.email?.toLowerCase().includes(q)     ||
-      r.ref?.toLowerCase().includes(q)       ||
-      r.serviceName?.toLowerCase().includes(q)
+      (r.first_name || '').toLowerCase().includes(q) ||
+      (r.last_name || '').toLowerCase().includes(q)  ||
+      (r.email || '').toLowerCase().includes(q)     ||
+      (r.ref || '').toLowerCase().includes(q)       ||
+      (r.service_name || r.service || '').toLowerCase().includes(q)
     );
   }
   return list;
@@ -257,13 +251,13 @@ function buildTableRow(res) {
   return `
     <tr data-id="${escHtml(res.id)}">
       <td>
-        <div class="client-name">${escHtml(res.firstName)} ${escHtml(res.lastName)}</div>
+        <div class="client-name">${escHtml(res.first_name)} ${escHtml(res.last_name)}</div>
         <div class="client-email">${escHtml(res.email)}</div>
       </td>
       <td>${escHtml(res.ref)}</td>
       <td>
-        <div>${escHtml(res.serviceName || res.service)}</div>
-        <div style="font-size:0.75rem;color:var(--text-500)">${escHtml(res.vehicleLabel || res.vehicle)}</div>
+        <div>${escHtml(res.service_name || res.service)}</div>
+        <div style="font-size:0.75rem;color:var(--text-500)">${escHtml(res.vehicle_label || res.vehicle)}</div>
       </td>
       <td>
         <div>${formatDate(res.date)}</div>
@@ -374,12 +368,12 @@ async function confirmReservation(id, closeModalAfter = false) {
   target.status = 'confirmed';
   saveReservations(reservations);
 
-  if (supabase) {
-    await supabase.from('reservations').update({ status: 'confirmed' }).eq('ref', target.ref);
+  if (sb) {
+    await sb.from('reservations').update({ status: 'confirmed' }).eq('ref', target.ref);
   }
 
-  sendStatusEmail(target, 'confirmed');
-  showToast('success', 'Réservation confirmée !', `Email envoyé à ${target.email}`);
+  await sendStatusEmail(target, 'confirmed');
+  showToast('success', 'Réservation confirmée !', `Notification tentée pour ${target.email}`);
   refreshAll();
   if (closeModalAfter) closeDetailModal();
 }
@@ -393,12 +387,12 @@ async function cancelReservation(id, closeModalAfter = false) {
   target.status = 'cancelled';
   saveReservations(reservations);
 
-  if (supabase) {
-    await supabase.from('reservations').update({ status: 'cancelled' }).eq('ref', target.ref);
+  if (sb) {
+    await sb.from('reservations').update({ status: 'cancelled' }).eq('ref', target.ref);
   }
 
-  sendStatusEmail(target, 'cancelled');
-  showToast('warning', 'Réservation annulée', `Email envoyé à ${target.email}`);
+  await sendStatusEmail(target, 'cancelled');
+  showToast('warning', 'Réservation annulée', `Notification tentée pour ${target.email}`);
   refreshAll();
   if (closeModalAfter) closeDetailModal();
 }
@@ -412,12 +406,12 @@ async function completeReservation(id, closeModalAfter = false) {
   target.status = 'completed';
   saveReservations(reservations);
 
-  if (supabase) {
-    await supabase.from('reservations').update({ status: 'completed' }).eq('ref', target.ref);
+  if (sb) {
+    await sb.from('reservations').update({ status: 'completed' }).eq('ref', target.ref);
   }
 
-  sendStatusEmail(target, 'completed');
-  showToast('success', 'Lavage terminé !', `Notification envoyée à ${target.email}`);
+  await sendStatusEmail(target, 'completed');
+  showToast('success', 'Lavage terminé !', `Notification tentée pour ${target.email}`);
   refreshAll();
   if (closeModalAfter) closeDetailModal();
 }
@@ -437,21 +431,21 @@ function refreshAll() {
 const EMAIL_TEMPLATES = {
   confirmed: (r) => ({
     subject: `✅ Votre réservation est confirmée — ${r.ref}`,
-    body: `Bonjour ${r.firstName},\n\nVotre réservation chez CôtePARC est confirmée !\n\n` +
-          `Détails :\n- Formule : ${r.serviceName}\n- Date : ${formatDate(r.date)} à ${r.time}\n` +
-          `- Véhicule : ${r.vehicleLabel || r.vehicle}\n- Référence : ${r.ref}\n\n` +
+    body: `Bonjour ${r.first_name || 'Client'},\n\nVotre réservation chez CôtePARC est confirmée !\n\n` +
+          `Détails :\n- Formule : ${r.service_name || r.service}\n- Date : ${formatDate(r.date)} à ${r.time}\n` +
+          `- Véhicule : ${r.vehicle_label || r.vehicle}\n- Référence : ${r.ref}\n\n` +
           `Nous vous attendons à l'heure convenue. Merci de votre confiance !\n\n` +
           `L'équipe CôtePARC — Mayotte\ncoterparc@gmail.com`,
   }),
   completed: (r) => ({
     subject: `🚗 Votre véhicule est prêt — ${r.ref}`,
-    body: `Bonjour ${r.firstName},\n\nBonne nouvelle ! Votre ${r.serviceName} est terminé.\n\n` +
+    body: `Bonjour ${r.first_name || 'Client'},\n\nBonne nouvelle ! Votre ${r.service_name || r.service} est terminé.\n\n` +
           `Votre véhicule est prêt et vous attend. Référence : ${r.ref}\n\n` +
           `Merci de votre confiance !\n\nL'équipe CôtePARC — Mayotte\ncoterparc@gmail.com`,
   }),
   cancelled: (r) => ({
     subject: `❌ Votre réservation a été annulée — ${r.ref}`,
-    body: `Bonjour ${r.firstName},\n\nNous sommes désolés, votre réservation du ${formatDate(r.date)} ` +
+    body: `Bonjour ${r.first_name || 'Client'},\n\nNous sommes désolés, votre réservation du ${formatDate(r.date)} ` +
           `(réf. ${r.ref}) a dû être annulée.\n\nN'hésitez pas à reprendre rendez-vous sur notre site.\n\n` +
           `L'équipe CôtePARC — Mayotte\ncoterparc@gmail.com`,
   }),
@@ -469,13 +463,23 @@ async function sendStatusEmail(reservation, type) {
     try {
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         to_email: reservation.email,
-        to_name:  `${reservation.firstName} ${reservation.lastName}`,
+        to_name:  `${reservation.first_name} ${reservation.last_name}`,
+        user_email: reservation.email,
+        user_name:  `${reservation.first_name} ${reservation.last_name}`,
+        reply_to: 'coterparc@gmail.com',
+        contact_email: reservation.email,
+        client_name: `${reservation.first_name} ${reservation.last_name}`,
         subject:  tpl.subject,
         message:  tpl.body,
+        ref:      reservation.ref,
+        date:     formatDate(reservation.date),
+        time:     reservation.time
       });
       return;
     } catch (err) {
-      console.warn('EmailJS error, fallback to mailto:', err);
+      console.warn('EmailJS error:', err);
+      showToast('error', 'Échec de l\'email', `Erreur: ${err.text || err.message || 'Inconnue'}`);
+      console.log('Fallback: tentative d\'ouverture du client mail local...');
     }
   }
 
@@ -491,7 +495,7 @@ function logEmail(reservation, type, subject, preview) {
   emails.unshift({
     id:             Date.now().toString(),
     type,
-    recipient:      `${reservation.firstName} ${reservation.lastName}`,
+    recipient:      `${reservation.first_name || 'Client'} ${reservation.last_name || ''}`,
     recipientEmail: reservation.email,
     subject,
     preview:        preview.substring(0, 200) + '…',
@@ -548,11 +552,11 @@ function openDetail(id) {
   if (!res) return;
   currentDetailId = id;
 
-  document.getElementById('detailName').textContent    = `${res.firstName} ${res.lastName}`;
+  document.getElementById('detailName').textContent    = `${res.first_name} ${res.last_name}`;
   document.getElementById('detailEmail').textContent   = res.email;
   document.getElementById('detailPhone').textContent   = res.phone;
-  document.getElementById('detailVehicle').textContent = res.vehicleLabel || res.vehicle;
-  document.getElementById('detailService').textContent = `${res.serviceName || res.service} — ${res.servicePrice || ''}`;
+  document.getElementById('detailVehicle').textContent = res.vehicle_label || res.vehicle;
+  document.getElementById('detailService').textContent = `${res.service_name || res.service} — ${res.service_price || ''}`;
   document.getElementById('detailDate').textContent    = `${formatDate(res.date)} à ${res.time}`;
   document.getElementById('detailRef').textContent     = res.ref;
   document.getElementById('detailStatus').innerHTML    = statusBadge(res.status);
@@ -644,6 +648,80 @@ function showToast(type, title, message, duration = 4500) {
 // =============================================
 // INIT
 // =============================================
+/* =============================================
+   REVIEWS MANAGEMENT
+   ============================================= */
+
+async function renderReviews() {
+    const tbody = document.getElementById('reviewsTableBody');
+    if (!tbody || !sb) return;
+
+    const { data: reviews, error } = await sb
+        .from('reviews')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Erreur chargement avis:', error);
+        return;
+    }
+
+    tbody.innerHTML = '';
+    reviews.forEach(rev => {
+        const date = new Date(rev.created_at).toLocaleDateString('fr-FR');
+        const stars = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+        const statusClass = rev.status === 'approved' ? 'status-confirmed' : 'status-pending';
+        const statusText = rev.status === 'approved' ? 'Approuvé' : 'En attente';
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <div class="client-info">
+                    <div class="client-avatar">${rev.client_name.charAt(0)}</div>
+                    <div><div class="client-name">${rev.client_name}</div></div>
+                </div>
+            </td>
+            <td><span class="review-stars" style="color:var(--warning)">${stars}</span></td>
+            <td><div class="review-comment" style="max-width:250px; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${rev.comment}">${rev.comment}</div></td>
+            <td><span class="text-muted">${date}</span></td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>
+                <div style="display:flex; gap:0.5rem;">
+                    ${rev.status !== 'approved' ? `
+                        <button class="btn-icon btn-confirm" onclick="approveReview('${rev.id}')" title="Approuver">
+                            <i class="bi bi-check-circle"></i>
+                        </button>` : ''}
+                    <button class="btn-icon btn-danger" onclick="deleteReview('${rev.id}')" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+async function approveReview(id) {
+    const { error } = await sb.from('reviews').update({ status: 'approved' }).eq('id', id);
+    if (error) {
+        showToast('error', 'Erreur', "Impossible d'approuver l'avis.");
+    } else {
+        showToast('success', 'Approuvé', "L'avis est maintenant visible sur le site.");
+        renderReviews();
+    }
+}
+
+async function deleteReview(id) {
+    if (!confirm("Voulez-vous vraiment supprimer cet avis ?")) return;
+
+    const { error } = await sb.from('reviews').delete().eq('id', id);
+    if (error) {
+        showToast('error', 'Erreur', "Impossible de supprimer l'avis.");
+    } else {
+        showToast('success', 'Supprimé', "L'avis a été retiré.");
+        renderReviews();
+    }
+}
 
 if (isLoggedIn()) {
   showAdminApp();

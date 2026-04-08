@@ -9,7 +9,7 @@
    ============================================= */
 const EMAILJS_PUBLIC_KEY   = 'zop-P62P1Isfv_-Cq'; 
 const EMAILJS_SERVICE_ID   = 'service_coterparc';
-const EMAILJS_TEMPLATE_ID  = 'template_ts3clrf';
+const EMAILJS_TEMPLATE_ID  = 'template_949nyvq';
 
 const EMAILJS_CONFIGURED   = EMAILJS_PUBLIC_KEY !== '';
 
@@ -23,11 +23,9 @@ if (EMAILJS_CONFIGURED && typeof emailjs !== 'undefined') {
 const SUPABASE_URL = 'https://tgijjuubscchbfnhjyre.supabase.co'; 
 const SUPABASE_KEY = 'sb_publishable_9yjHAfVEuRFGRzr73abVFg_BiFaG-GT'; 
 
-let supabase = null;
-if (SUPABASE_URL && typeof supabasejs !== 'undefined') {
-  supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_KEY);
-} else if (typeof _supabase !== 'undefined') {
-  supabase = _supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb = null;
+if (typeof supabase !== 'undefined') {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 }
 
 // =============================================
@@ -227,11 +225,11 @@ async function sendNotificationEmails(reservation) {
 
   const params = {
     ref: reservation.ref,
-    client_name: `${reservation.firstName} ${reservation.lastName}`,
+    client_name: `${reservation.first_name} ${reservation.last_name}`,
     client_email: reservation.email,
     client_phone: reservation.phone,
-    vehicle: reservation.vehicleLabel,
-    service: reservation.serviceName,
+    vehicle: reservation.vehicle_label || reservation.vehicle,
+    service: reservation.service_name || reservation.service,
     date: formatDate(reservation.date),
     time: reservation.time,
     message: reservation.message || 'Aucun message'
@@ -243,21 +241,29 @@ async function sendNotificationEmails(reservation) {
       ...params,
       to_email: reservation.email,
       to_name: params.client_name,
+      user_email: reservation.email,
+      user_name: params.client_name,
+      client_email: reservation.email,
+      reply_to: 'coterparc@gmail.com',
+      contact_email: reservation.email,
       subject: 'Confirmation de votre demande — CôtePARC'
     });
 
-    // 2. Envoi à l'admin (coterparc@gmail.com)
+    // 2. Envoi à l'admin
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       ...params,
       to_email: 'coterparc@gmail.com',
       to_name: 'Admin CôtePARC',
+      user_email: 'coterparc@gmail.com',
+      reply_to: reservation.email,
+      contact_email: 'coterparc@gmail.com',
       subject: '🔔 ALERTE : Nouvelle réservation reçue !'
     });
 
     showToast('success', 'Email envoyé', 'Un récapitulatif a été envoyé par mail.');
   } catch (err) {
     console.error('EmailJS Error:', err);
-    showToast('error', 'Erreur mail', 'Une erreur est survenue lors de l\'envoi du mail.');
+    showToast('error', 'Erreur email', `Détail : ${err.text || err.message || 'Erreur inconnue'}`);
   }
 }
 reservationForm?.addEventListener('submit', (e) => {
@@ -368,9 +374,9 @@ async function saveReservation(data) {
   localStorage.setItem('cw_reservations', JSON.stringify(localReservations));
 
   // 2. Sauvegarde Supabase (si configuré)
-  if (supabase) {
+  if (sb) {
     try {
-      const { data: dbData, error } = await supabase
+      const { data: dbData, error } = await sb
         .from('reservations')
         .insert([reservation])
         .select();
@@ -397,9 +403,9 @@ function getReservations() {
 
 function showConfirmModal(reservation) {
   document.getElementById('modalRef').textContent     = reservation.ref;
-  document.getElementById('modalName').textContent    = `${reservation.firstName} ${reservation.lastName}`;
+  document.getElementById('modalName').textContent    = `${reservation.first_name || 'Cher client'} ${reservation.last_name || ''}`;
   document.getElementById('modalDate').textContent    = formatDate(reservation.date) + ' à ' + reservation.time;
-  document.getElementById('modalService').textContent = reservation.serviceName;
+  document.getElementById('modalService').textContent = reservation.service_name || reservation.service;
   confirmModal.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -469,4 +475,121 @@ function formatDate(isoDate) {
   const [y, m, d] = isoDate.split('-');
   const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+}
+
+/* =============================================
+   REVIEWS SYSTEM
+   ============================================= */
+const reviewModal = document.getElementById('reviewModal');
+const reviewForm  = document.getElementById('reviewForm');
+const openReviewBtn = document.getElementById('openReviewBtn');
+const closeReviewBtn = document.getElementById('closeReviewBtn');
+const starBtns = document.querySelectorAll('.star-btn');
+const revRatingInput = document.getElementById('revRating');
+
+// Initial load
+document.addEventListener('DOMContentLoaded', () => {
+    loadReviews();
+});
+
+// Star rating logic
+starBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-value');
+        revRatingInput.value = val;
+        updateStars(val);
+    });
+});
+
+function updateStars(rating) {
+    starBtns.forEach(btn => {
+        const val = btn.getAttribute('data-value');
+        if (val <= rating) {
+            btn.className = 'bi bi-star-fill star-btn active';
+        } else {
+            btn.className = 'bi bi-star star-btn';
+        }
+    });
+}
+
+// Modal Toggle
+openReviewBtn?.addEventListener('click', () => {
+    reviewModal.classList.add('active');
+    updateStars(5);
+});
+
+closeReviewBtn?.addEventListener('click', () => {
+    reviewModal.classList.remove('active');
+});
+
+// Submit Review
+reviewForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = reviewForm.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    
+    const reviewData = {
+        client_name: document.getElementById('revName').value,
+        rating: parseInt(revRatingInput.value),
+        comment: document.getElementById('revComment').value,
+        status: 'approved'
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Envoi...';
+
+    if (sb) {
+        const { error } = await sb.from('reviews').insert([reviewData]);
+        if (error) {
+            console.error('Erreur Supabase:', error);
+            showToast('error', 'Erreur', "Impossible d'envoyer l'avis.");
+        } else {
+            showToast('success', 'Merci !', "Votre avis a été publié.");
+            reviewModal.classList.remove('active');
+            reviewForm.reset();
+            loadReviews();
+        }
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+});
+
+// Load Reviews from Supabase
+async function loadReviews() {
+    const grid = document.getElementById('testimonialsGrid');
+    if (!grid) return;
+
+    if (sb) {
+        const { data, error } = await sb
+            .from('reviews')
+            .select('*')
+            .eq('status', 'approved')
+            .order('rating', { ascending: false })
+            .limit(3);
+
+        if (!error && data && data.length > 0) {
+            grid.innerHTML = '';
+            data.forEach(rev => {
+                const stars = '<i class="bi bi-star-fill"></i>'.repeat(rev.rating) + 
+                            '<i class="bi bi-star"></i>'.repeat(5 - rev.rating);
+                
+                grid.innerHTML += `
+                    <article class="testimonial-card" style="opacity:1; transform:none;">
+                        <div class="testimonial-stars" aria-label="${rev.rating} étoiles">
+                            ${stars}
+                        </div>
+                        <blockquote class="testimonial-text">"${rev.comment}"</blockquote>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">${rev.client_name.charAt(0)}</div>
+                            <div class="author-info">
+                                <div class="author-name">${rev.client_name}</div>
+                                <div class="author-verified"><i class="bi bi-patch-check-fill"></i> Client vérifié</div>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+        }
+    }
 }

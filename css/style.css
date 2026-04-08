@@ -166,31 +166,28 @@ textarea {
 }
 
 .logo-badge {
-  background: var(--navy-900);
-  border: 2px solid var(--primary-light);
-  border-radius: 12px;
-  padding: 4px;
-  display: flex;
+  background: white;
+  /* Fond blanc solide pour cacher les carrés de transparence */
+  border: 3px solid var(--primary-light);
+  border-radius: 50%;
+  /* Cercle parfait */
+  padding: 5px;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
-  width: 70px;
-  height: 70px;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+  width: 80px !important;
+  height: 80px !important;
+  flex-shrink: 0;
   transition: var(--transition-base);
 }
 
-.logo-badge:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
-  transform: scale(1.05);
-}
-
 .logo-main {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
-  object-position: center 50%;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  /* On remplit le cercle pour ne pas voir les bords */
   display: block;
 }
 
@@ -277,22 +274,39 @@ textarea {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.08) 0%, var(--navy-900) 100%);
+  background: var(--bg-900);
 }
 
 .hero::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: url('../images/hero-car.png') no-repeat center center;
   background-size: cover;
-  opacity: 0.4;
-  z-index: -1;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 95%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 95%);
+  opacity: 0.3;
+  z-index: 0;
+}
+
+/* Overlay pour fondre l'image dans le noir */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, transparent 0%, var(--bg-900) 80%),
+    linear-gradient(to bottom, transparent 60%, var(--bg-900) 100%);
+  z-index: 1;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 4rem;
+  max-width: 1200px;
+  width: 100%;
 }
 
 .hero-bg-orb {
@@ -503,11 +517,8 @@ textarea {
   background-clip: text;
 }
 
-.hero-stat-label {
-  font-size: 0.8rem;
-  color: var(--text-500);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.hero-visual {
+  display: none;
 }
 
 /* =============================================
@@ -987,23 +998,25 @@ section {
 
 .modal-overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.5rem;
   opacity: 0;
-  visibility: hidden;
-  transition: var(--transition-slow);
+  pointer-events: none;
+  transition: var(--transition-base);
 }
 
 .modal-overlay.active {
   opacity: 1;
-  visibility: visible;
+  pointer-events: auto;
 }
 
 .modal-box {
@@ -1324,16 +1337,92 @@ footer {
   }
 }
 
-/* Scroll reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+/* =============================================
+   TESTIMONIALS (AVIS CLIENTS)
+   ============================================= */
+
+#avis {
+  background: var(--bg-900);
+  position: relative;
+  overflow: hidden;
 }
 
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.testimonial-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  position: relative;
+  transition: var(--transition-slow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.testimonial-stars {
+  color: var(--warning);
+  font-size: 1rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.testimonial-text {
+  font-size: 1rem;
+  color: var(--text-200);
+  line-height: 1.7;
+  font-style: italic;
+  flex: 1;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.author-avatar {
+  width: 44px;
+  height: 44px;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.author-name {
+  font-weight: 700;
+  color: var(--text-100);
+  font-size: 0.95rem;
+}
+
+.author-verified {
+  font-size: 0.75rem;
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 /* =============================================
@@ -1391,6 +1480,30 @@ footer {
   .form-submit-wrapper,
   .service-selector {
     grid-column: 1 / -1;
+  }
+
+  /* Star Rating */
+  .star-rating {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--text-500);
+    margin-bottom: 0.5rem;
+  }
+
+  .star-btn {
+    cursor: pointer;
+    transition: var(--transition-base);
+  }
+
+  .star-btn.active,
+  .star-btn:hover {
+    color: var(--warning);
+  }
+
+  .testimonial-actions {
+    text-align: center;
+    margin-top: 2rem;
   }
 
   .service-selector {

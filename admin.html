@@ -66,7 +66,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="adminSidebar" role="navigation" aria-label="Navigation admin">
       <div class="sidebar-header">
-        <div class="logo-badge" style="width: 50px; height: 50px;">
+        <div class="logo-badge" style="width: 50px !important; height: 50px !important;">
           <img src="images/logo.png" alt="Logo CôtePARC" class="logo-main" />
         </div>
       </div>
@@ -85,11 +85,15 @@
           <span class="nav-item-badge" id="pendingBadge" style="display:none;" aria-label="en attente">0</span>
         </button>
 
-        <button class="nav-item" data-view="emailsView" id="navEmails">
-          <span class="nav-item-icon" aria-hidden="true"><i class="bi bi-envelope-paper"></i></span>
-          <span class="nav-item-text">Messages envoyés</span>
+        <button class="nav-item" data-view="emailsView">
+          <span class="nav-item-icon" aria-hidden="true"><i class="bi bi-envelope-at"></i></span>
+          <span class="nav-item-text">Campagnes</span>
         </button>
-
+        <button class="nav-item" data-view="reviewsView">
+          <span class="nav-item-icon" aria-hidden="true"><i class="bi bi-chat-left-dots"></i></span>
+          <span class="nav-item-text">Avis Clients</span>
+        </button>
+        <div class="nav-divider"></div>
         <p class="nav-section-title">Compte</p>
 
         <a href="index.html" class="nav-item">
@@ -330,6 +334,33 @@
         </div><!-- end reservationsView -->
 
         <!-- VIEW: EMAILS -->
+        <div class="view" id="reviewsView">
+          <div class="page-header">
+            <h1 class="page-title"><i class="bi bi-chat-left-dots"></i> Gestion des Avis</h1>
+            <p class="page-subtitle">Modérez et gérez les témoignages clients</p>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title"><i class="bi bi-star"></i> Liste des avis</h2>
+            </div>
+            <div class="table-scroll">
+              <table class="res-table" aria-label="Table des avis">
+                <thead>
+                  <tr>
+                    <th scope="col">Client</th>
+                    <th scope="col">Note</th>
+                    <th scope="col">Commentaire</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- end reviewsView -->
+
         <div class="view" id="emailsView">
           <div class="page-header">
             <h1 class="page-title"><i class="bi bi-envelope-paper"></i> Messages envoyés</h1>

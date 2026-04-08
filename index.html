@@ -16,7 +16,7 @@
 
   <!-- ========== NAVBAR ========== -->
   <nav class="navbar" id="navbar" role="navigation" aria-label="Navigation principale">
-    <div class="nav-logo">
+    <div class="logo-badge">
       <img src="images/logo.png" alt="CôtePARC Logo" class="logo-main" id="logoMain" />
     </div>
     <ul class="nav-links" id="navLinks" role="list">
@@ -296,7 +296,8 @@
         <span class="section-label">Avis clients</span>
         <h2 class="section-title" id="avisTitle">Ce que disent nos clients</h2>
       </div>
-      <div class="testimonials-grid">
+      <div class="testimonials-grid" id="testimonialsGrid">
+        <!-- Les avis seront chargés dynamiquement ici -->
         <article class="testimonial-card reveal">
           <div class="testimonial-stars" aria-label="5 étoiles">
             <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
@@ -314,8 +315,51 @@
           </div>
         </article>
       </div>
+
+      <div class="testimonial-actions reveal">
+        <button class="btn-secondary" id="openReviewBtn">
+          <i class="bi bi-pencil-square"></i> Laisser un avis
+        </button>
+      </div>
     </div>
   </section>
+
+  <!-- ========== REVIEW MODAL ========== -->
+  <div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+    <div class="modal-box">
+      <h2 class="modal-title" id="reviewTitle">Votre avis compte</h2>
+      <p class="modal-message">Partagez votre expérience avec CôtePARC.</p>
+      
+      <form id="reviewForm">
+        <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+          <label class="form-label" for="revName">Votre nom</label>
+          <input type="text" id="revName" class="form-input" required placeholder="ex: Jean Dupont" />
+        </div>
+
+        <div class="form-group" style="text-align: left; margin-bottom: 1.5rem;">
+          <label class="form-label">Votre note</label>
+          <div class="star-rating" id="starRating">
+            <i class="bi bi-star star-btn" data-value="1"></i>
+            <i class="bi bi-star star-btn" data-value="2"></i>
+            <i class="bi bi-star star-btn" data-value="3"></i>
+            <i class="bi bi-star star-btn" data-value="4"></i>
+            <i class="bi bi-star star-btn" data-value="5"></i>
+          </div>
+          <input type="hidden" id="revRating" value="5" />
+        </div>
+
+        <div class="form-group" style="text-align: left; margin-bottom: 1.5rem;">
+          <label class="form-label" for="revComment">Commentaire</label>
+          <textarea id="revComment" class="form-input" rows="3" required placeholder="Ce que vous avez pensé de notre service..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+          <button type="submit" class="btn-primary" style="flex: 1;">Publier l'avis</button>
+          <button type="button" class="btn-secondary" id="closeReviewBtn">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ========== CONFIRMATION MODAL ========== -->
   <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="modalHeading">
@@ -343,11 +387,10 @@
   <footer role="contentinfo">
     <div class="footer-content">
       <div class="footer-brand">
-        <a class="navbar-brand" href="#" aria-label="CôtePARC - Accueil">
-        <div class="logo-badge">
+        <div class="logo-badge" style="width: 50px !important; height: 50px !important;">
           <img src="images/logo.png" alt="Logo CôtePARC" class="logo-main" />
         </div>
-      </a>  </div>
+      </div>
         <p class="footer-tagline">
           Le spécialiste du nettoyage automobile sur réservation à Mayotte. Propreté, soin et professionnalisme à chaque passage.
         </p>
